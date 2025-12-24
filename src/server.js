@@ -5,7 +5,7 @@ const port = 3000;
 
 
 app.get('/', (req, res) => {
-    res.send(`<!doctype html>
+  res.send(`<!doctype html>
   <html lang="en">
     <head>
       <meta charset="utf-8" />
@@ -37,28 +37,46 @@ app.get('/', (req, res) => {
   </html>`);
 });
 
-let users = [{id:"1", name: "Alice" , email:"alice@example.com"}];
+let users = [
+  { id: "1", name: "Alice", email: "alice@example.com" },
+  { id: "2", name: "Bob", email: "bob@example.com" },
+];
+
 
 app.get("/users", (req, res) => {
-    res.status(200).json(users);
-    console.log(res);
+  res.status(200).json(users);
+  console.log(res);
 });
 
-app.post("/users",(req, res) => {
-    const {name,email} = req.body;
+app.post("/users", (req, res) => {
+  const { name, email } = req.body;
 
-    const newUser ={
-        id: String(users.length + 1),
-        name: name,
-        email: email,
-    };
+  const newUser = {
+    id: String(users.length + 1),
+    name: name,
+    email: email,
+  };
 
-    users.push(newUser);
+  users.push(newUser);
 
-    res.status(201).json(newUser);
+  res.status(201).json(newUser);
 });
 
+//The function inside is called Route Handler/Controller
+app.delete("/users/:id", (req, res) => {
+  const userId = req.params.id;
+
+  const userIndex = users.findIndex((user) => user.id === userId);
+
+  if (userIndex!== -1){
+  users.splice(userIndex, 1);
+
+  res.status(200).send(`User with ID ${userId} deleted ✅`);
+} else {
+  res.status(404).send("User not found.");
+}
+});
 
 app.listen(port, () => {
-    console.log(`Server running on port ${port}🦦`);
+  console.log(`Server running on port ${port}🦦`);
 })
